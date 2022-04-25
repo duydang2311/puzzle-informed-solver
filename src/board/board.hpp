@@ -2,17 +2,20 @@
 #define PUZZLE_BOARD_BOARD_H
 
 #include "../direction/direction.hpp"
+#include <optional>
 
 class Board {
   private:
-    unsigned char* matrix;
+    int* matrix;
     unsigned int len;
     unsigned int zero_idx;
 
   public:
-    Board(unsigned char*, unsigned int);
-    Board* move(Direction) const;
+    Board(int*, unsigned int);
+    Board(const Board*);
+    std::optional<Board*> move(Direction) const;
     bool equals(const Board*) const;
+    const Board* print() const;
     ~Board();
 };
 
