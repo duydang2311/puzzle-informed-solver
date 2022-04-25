@@ -7,6 +7,7 @@ class Board {
   private:
     unsigned char* matrix;
     unsigned int len;
+    unsigned int zero_idx;
 
   public:
     Board(unsigned char*, unsigned int);
