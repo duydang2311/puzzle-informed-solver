@@ -9,6 +9,8 @@ class Board {
     int* matrix;
     unsigned int len;
     unsigned int zero_idx;
+    const Board* parent;
+    unsigned int depth;
 
   public:
     Board(int*, unsigned int);

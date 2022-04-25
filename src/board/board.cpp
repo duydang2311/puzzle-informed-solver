@@ -3,7 +3,8 @@
 #include <iostream>
 #include <optional>
 
-Board::Board(int* matrix, unsigned int len) : matrix(matrix), len(len) {
+Board::Board(int* matrix, unsigned int len)
+    : matrix(matrix), len(len), depth(1) {
     for (unsigned int i = 0; i != len; ++i) {
         if (*(matrix + i) == 0) {
             zero_idx = i;
@@ -12,7 +13,9 @@ Board::Board(int* matrix, unsigned int len) : matrix(matrix), len(len) {
     }
 }
 
-Board::Board(const Board* board) : len(board->len), zero_idx(board->zero_idx) {
+Board::Board(const Board* board)
+    : parent(board), depth(board->depth + 1), len(board->len),
+      zero_idx(board->zero_idx) {
     matrix = new int[len];
     for (unsigned int i = 0; i != len; ++i) {
         (*(matrix + i) = *(board->matrix + i));
