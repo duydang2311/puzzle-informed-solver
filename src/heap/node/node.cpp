@@ -1,7 +1,9 @@
 #include "node.hpp"
+#include "../../board/board.hpp"
 #include <iostream>
+#include <utility>
 
-Node::Node(int value) : _value(value) {}
+Node::Node(std::pair<Board*, unsigned int> value) : _value(value) {}
 
 Node* Node::left() const { return _left; }
 Node* Node::left(Node* left) {
@@ -21,8 +23,8 @@ Node* Node::parent(Node* parent) {
     return this;
 }
 
-const int& Node::value() const { return _value; }
-Node* Node::value(int value) {
+std::pair<Board*, unsigned int> Node::value() const { return _value; }
+Node* Node::value(std::pair<Board*, unsigned int> value) {
     _value = value;
     return this;
 }

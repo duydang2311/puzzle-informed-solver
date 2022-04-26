@@ -10,14 +10,17 @@ class Board {
     unsigned int len;
     unsigned int zero_idx;
     const Board* parent;
-    unsigned int depth;
+    unsigned int _depth;
 
   public:
     Board(int*, unsigned int);
     Board(const Board*);
-    std::optional<Board*> move(Direction) const;
+    std::optional<Board*> move(Direction);
     bool equals(const Board*) const;
     const Board* print() const;
+    const Board* printTrace() const;
+    unsigned int getManhattanDistance(const Board*) const;
+    unsigned int depth() const { return _depth; }
     ~Board();
 };
 

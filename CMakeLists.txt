@@ -18,3 +18,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE heap)
 
 add_subdirectory(src/heap/node)
 target_link_libraries(${PROJECT_NAME} PRIVATE node)
+
+add_subdirectory(src/solver)
+target_link_libraries(${PROJECT_NAME} PRIVATE solver)
+
+add_subdirectory(src/solver/greedy)
+target_link_libraries(${PROJECT_NAME} PRIVATE greedy-solver)

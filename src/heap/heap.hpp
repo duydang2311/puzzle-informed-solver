@@ -6,13 +6,16 @@
 class Heap {
   private:
     Node* _root;
+    unsigned int _length = 0;
 
   public:
     Heap(Node* = nullptr);
     Heap* push(Node* const);
-    Heap* pop();
+    Node* pop();
     Node* root() const;
     Heap* root(Node*);
+    unsigned int length() const;
+    ~Heap();
 };
 
 #endif

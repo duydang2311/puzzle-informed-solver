@@ -2,12 +2,21 @@
 #include <iostream>
 
 namespace {
+void recursivelyDelete(const Node* node) {
+    if (node == nullptr) {
+        return;
+    }
+    recursivelyDelete(node->left());
+    recursivelyDelete(node->right());
+    delete node;
+}
+
 void printTraversal(const Node* node) {
     if (node == nullptr) {
         return;
     }
     printTraversal(node->left());
-    std::cout << node->value() << " ";
+    std::cout << node->value().second << " ";
     printTraversal(node->right());
 }
 
@@ -45,7 +54,7 @@ void ensureParent(Node* node) {
 }
 
 void ensureHeapPropertyUpward(Heap* heap, Node* node) {
-    if (node->value() < node->parent()->value()) {
+    if (node->value().second < node->parent()->value().second) {
         auto parent = node->parent();
         auto leftTemp = node->left();
         auto rightTemp = node->right();
@@ -78,7 +87,7 @@ void ensureHeapPropertyUpward(Heap* heap, Node* node) {
 }
 
 void ensureHeapPropertyDownward(Heap* heap, Node* node) {
-    if (node->value() < node->parent()->value()) {
+    if (node->value().second < node->parent()->value().second) {
         auto parent = node->parent();
         auto leftTemp = node->left();
         auto rightTemp = node->right();
@@ -144,6 +153,7 @@ Heap* Heap::root(Node* root) {
 }
 
 Heap* Heap::push(Node* const node) {
+    ++_length;
     if (_root == nullptr) {
         _root = node;
         return this;
@@ -159,17 +169,17 @@ Heap* Heap::push(Node* const node) {
     return this;
 }
 
-Heap* Heap::pop() {
+Node* Heap::pop() {
     if (_root == nullptr) {
-        return this;
+        return nullptr;
     }
+    --_length;
+    auto temp = _root;
     auto lastNode = findLastNode(this);
     if (lastNode == _root) {
-        delete _root;
         _root = nullptr;
-        return this;
+        return temp;
     }
-    auto temp = _root;
     lastNode->left(_root->left());
     lastNode->right(_root->right());
     _root = lastNode;
@@ -186,5 +196,12 @@ Heap* Heap::pop() {
     if (_root->left() != nullptr) {
         ensureHeapPropertyDownward(this, _root->left());
     }
-    return this;
+    return temp;
+}
+
+unsigned int Heap::length() const { return _length; }
+
+Heap::~Heap() {
+    _length = 0;
+    recursivelyDelete(_root);
 }
