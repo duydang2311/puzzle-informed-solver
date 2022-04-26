@@ -12,3 +12,9 @@ add_subdirectory(src/direction)
 
 add_subdirectory(src/board)
 target_link_libraries(${PROJECT_NAME} PRIVATE board)
+
+add_subdirectory(src/heap)
+target_link_libraries(${PROJECT_NAME} PRIVATE heap)
+
+add_subdirectory(src/heap/node)
+target_link_libraries(${PROJECT_NAME} PRIVATE node)
