@@ -1,10 +1,28 @@
+from time import time
+from typing import Any, Callable, TypeVar, cast
 from state.state import State
 from direction.direction import Direction
 from solver.solver import Solver
 
 
+F = TypeVar('F', bound=Callable[..., Any])
+
+
+def _measure(func: F) -> F:
+    def wrapped(self: Solver, *args: Any, **kwargs: Any):
+        start = time()
+        try:
+            return func(self, *args, **kwargs)
+        finally:
+            end_ = time() - start
+            print(f"\t> {end_} seconds")
+    return cast(F, wrapped)
+
+
 class GreedySolver(Solver):
-    def solve(self, initial: State):
+    @_measure
+    def solve(self, initial: State, heuristicFunction: Callable[[State, State], int]):
+        super().solve(initial, heuristicFunction)
         increment = 1
         visited: set[tuple[int, ...]] = set()
         heap: list[tuple[int, int, State]] = []
@@ -14,12 +32,12 @@ class GreedySolver(Solver):
             if state.matrix == self.goal.matrix:
                 print("found,", len(visited), 'states expanded,',
                       state.depth, 'depths')
-                state.print_trace()
+                # state.print_trace()
                 break
             for i in Direction:
                 moved = state.move(i)
                 if moved is None or tuple(moved.matrix) in visited:
                     continue
-                Solver._push(heap, Solver._heuristics(
+                Solver._push(heap, heuristicFunction(
                     moved, self.goal), (increment := increment + 1), moved)
                 Solver._visit(visited, moved.matrix)

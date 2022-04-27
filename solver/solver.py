@@ -1,4 +1,6 @@
 from __future__ import annotations
+import math
+from typing import Callable
 from state.state import State
 import heapq
 import abc
@@ -11,12 +13,25 @@ class Solver():
         self.goal = goal
 
     @staticmethod
-    def _heuristics(state1: State, state2: State):
-        diff = 0
+    def misplaced(state1: State, state2: State):
+        misplaced = 0
         for i, _ in enumerate(state1.matrix):
             if state1.matrix[i] != state2.matrix[i]:
-                diff += 1
-        return diff
+                misplaced += 1
+        return misplaced
+
+    @staticmethod
+    def manhattan(state1: State, state2: State):
+        cost = 0
+        pos: list[int] = []
+        for i, v in enumerate(state2.matrix):
+            pos.insert(v, i)
+        for i, _ in enumerate(state1.matrix):
+            if state1.matrix[i] != state2.matrix[i]:
+                cost += abs((i % 3) - (pos[state2.matrix[i]] % 3)) + \
+                    abs(math.floor(i / 3) -
+                        math.floor(pos[state2.matrix[i]] / 3))
+        return cost
 
     @staticmethod
     def _push(heap: list[tuple[int, int, State]], cost: int, identity: int, state: State):
@@ -31,5 +46,5 @@ class Solver():
         visitedSet.add(tuple(matrix))
 
     @abc.abstractmethod
-    def solve(self, initial: State):
+    def solve(self, initial: State, heuristicFunction: Callable[[State, State], int]):
         pass
