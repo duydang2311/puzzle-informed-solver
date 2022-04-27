@@ -51,7 +51,7 @@ class State:
 
 
 goal = State([1, 2, 3, 4, 5, 6, 7, 8, 0])
-initial = State([2, 3, 6, 5, 7, 4, 1, 0, 8])
+initial = State([2, 6, 5, 0, 8, 7, 4, 3, 1])
 heap: list[tuple[int, int, State]] = []
 visited: set[tuple[int, ...]] = set()
 increment = 0
@@ -65,9 +65,9 @@ def heuristics(state1: State, state2: State):
     return diff
 
 
-def push(state: State):
+def push(cost: int, state: State):
     global increment
-    heapq.heappush(heap, (heuristics(state, goal), increment, state))
+    heapq.heappush(heap, (cost, increment, state))
     increment += 1
 
 
@@ -79,9 +79,9 @@ def visit(matrix: list[int]):
     visited.add(tuple(matrix))
 
 
-push(initial)
+push(heuristics(initial, goal), initial)
 while len(heap) != 0:
-    heuristic, _, state = pop()
+    cost, _, state = pop()
     if state.matrix == goal.matrix:
         print("found,", len(visited), 'states expanded,',
               state.depth, 'depths')
@@ -91,5 +91,5 @@ while len(heap) != 0:
         moved = state.move(i)
         if moved is None or tuple(moved.matrix) in visited:
             continue
-        push(moved)
+        push(heuristics(moved, goal), moved)
         visit(moved.matrix)
