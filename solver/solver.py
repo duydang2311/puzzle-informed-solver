@@ -23,14 +23,14 @@ class Solver():
     @staticmethod
     def manhattan(state1: State, state2: State):
         cost = 0
-        pos: list[int] = []
+        pos: list[int] = [0 for _ in range(9)]
         for i, v in enumerate(state2.matrix):
-            pos.insert(v, i)
+            pos[v] = i
         for i, _ in enumerate(state1.matrix):
-            if state1.matrix[i] != state2.matrix[i]:
-                cost += abs((i % 3) - (pos[state2.matrix[i]] % 3)) + \
+            if i != pos[state1.matrix[i]]:
+                cost += abs((i % 3) - (pos[state1.matrix[i]] % 3)) + \
                     abs(math.floor(i / 3) -
-                        math.floor(pos[state2.matrix[i]] / 3))
+                        math.floor(pos[state1.matrix[i]] / 3))
         return cost
 
     @staticmethod
