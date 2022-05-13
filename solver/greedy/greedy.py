@@ -24,20 +24,21 @@ class GreedySolver(Solver):
     def solve(self, initial: State, heuristicFunction: Callable[[State, State], int]):
         super().solve(initial, heuristicFunction)
         increment = 1
-        visited: set[tuple[int, ...]] = set()
+        visited: set[State] = set()
         heap: list[tuple[int, int, State]] = []
         Solver._push(heap, 0, (increment := increment + 1), initial)
         while len(heap) != 0:
             _, _, state = Solver._pop(heap)
-            if state.matrix == self.goal.matrix:
+            if state == self.goal:
                 print("found,", len(visited), 'states expanded,',
                       state.depth, 'depths')
                 # state.print_trace()
                 break
             for i in Direction:
                 moved = state.move(i)
-                if moved is None or tuple(moved.matrix) in visited:
+                if moved is None or moved in visited:
                     continue
                 Solver._push(heap, heuristicFunction(
                     moved, self.goal), (increment := increment + 1), moved)
-                Solver._visit(visited, moved.matrix)
+                visited.add(moved)
+        print("could not find goal")

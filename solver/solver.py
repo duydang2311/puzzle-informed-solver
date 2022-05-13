@@ -41,10 +41,6 @@ class Solver():
     def _pop(heap: list[tuple[int, int, State]]):
         return heapq.heappop(heap)
 
-    @staticmethod
-    def _visit(visitedSet: set[tuple[int, ...]], matrix: list[int]):
-        visitedSet.add(tuple(matrix))
-
     @abc.abstractmethod
     def solve(self, initial: State, heuristicFunction: Callable[[State, State], int]):
         pass
