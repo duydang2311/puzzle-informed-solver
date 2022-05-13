@@ -22,22 +22,40 @@ def _measure(func: F) -> F:
 class AStarSolver(Solver):
     @_measure
     def solve(self, initial: State, heuristicFunction: Callable[[State, State], int]):
-        super().solve(initial, heuristicFunction)
         increment = 0
-        visited: set[tuple[int, ...]] = set()
-        heap: list[tuple[int, int, State]] = []
-        Solver._push(heap, 0, (increment := increment + 1), initial)
+        open_set: set[State] = set([initial])
+        closed_set: set[State] = set()
+        heap: list[tuple[int, int, State]] = [
+            (0, (increment := increment + 1), initial)]
         while len(heap) != 0:
             _, _, state = Solver._pop(heap)
             if state.matrix == self.goal.matrix:
-                print("found,", len(visited), 'states expanded,',
+                print("found,", len(closed_set), 'states visited,',
                       state.depth, 'depths')
-                # state.print_trace()
                 break
             for i in Direction:
                 moved = state.move(i)
-                if moved is None or tuple(moved.matrix) in visited:
+                if moved is None:
                     continue
-                Solver._push(heap, moved.depth +
-                             heuristicFunction(moved, self.goal), (increment := increment + 1), moved)
-                Solver._visit(visited, moved.matrix)
+                cost = moved.depth + heuristicFunction(moved, self.goal)
+                if moved in open_set:
+                    open_list = list(open_set)
+                    old = open_list[open_list.index(moved)]
+                    old_cost = old.depth + heuristicFunction(old, self.goal)
+                    if old_cost > cost:
+                        open_set.remove(old)
+                        for i in reversed(range(increment)):
+                            if ((old_cost, i, moved) in heap):
+                                heap.remove((old_cost, i, moved))
+                                break
+                elif moved in closed_set:
+                    closed_list = list(closed_set)
+                    old = closed_list[closed_list.index(moved)]
+                    if old.depth + heuristicFunction(old, self.goal) > cost:
+                        closed_set.remove(old)
+                if moved not in open_set:
+                    Solver._push(
+                        heap, cost, (increment := increment + 1), moved)
+                    open_set.add(moved)
+            open_set.remove(state)
+            closed_set.add(state)
