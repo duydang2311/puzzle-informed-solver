@@ -3,7 +3,7 @@ from direction.direction import Direction
 
 
 class State:
-    def __init__(self, matrix: tuple[int], parent: State | None = None):
+    def __init__(self, matrix: tuple[int, ...], parent: State | None = None):
         self.parent = parent
         self.matrix = matrix
         self.depth = 1 if parent is None else parent.depth + 1
