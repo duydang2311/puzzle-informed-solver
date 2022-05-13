@@ -3,11 +3,17 @@ from direction.direction import Direction
 
 
 class State:
-    def __init__(self, matrix: list[int], parent: State | None = None):
+    def __init__(self, matrix: tuple[int], parent: State | None = None):
         self.parent = parent
         self.matrix = matrix
         self.depth = 1 if parent is None else parent.depth + 1
         self.zero = self.matrix.index(0)
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, State) and self.matrix == other.matrix
+
+    def __hash__(self):
+        return hash(self.matrix)
 
     def move(self, direction: Direction) -> State | None:
         mtx: list[int] | None = None
@@ -33,7 +39,7 @@ class State:
                  ) = (mtx[self.zero + 1], mtx[self.zero])
         if mtx is None:
             return None
-        return State(mtx, self)
+        return State(tuple(mtx), self)
 
     def print_trace(self):
         state = self
