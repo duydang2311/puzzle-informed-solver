@@ -3,6 +3,9 @@ from direction.direction import Direction
 
 
 class State:
+    identity: int = 0
+    cost: int = 0
+
     def __init__(self, matrix: tuple[int, ...], parent: State | None = None):
         self.parent = parent
         self.matrix = matrix
